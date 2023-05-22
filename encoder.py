@@ -31,12 +31,15 @@ def save_to_file(data):
 
 
 if __name__ == '__main__':
+    # load the image
     img = cv2.imread('./barbara.pgm', 0)
-    h = img.shape[0]
-    w = img.shape[1]
-
-    result = np.zeros((h, w), np.dtype('U100'))
-    for y in range(0, h):
-        for x in range(0, w):
-            result[y][x] = encode_golomb(img[y, x], M)
+    # get binary representation of image as string
+    binary_code = ''.join(np.unpackbits(img).astype(str))
+    # compress binary code as length of zeros arrays
+    compressed_code = list(map(len, binary_code.split('1')))
+    # list of M values for map function
+    M_list = [M] * len(compressed_code)
+    # encode compressed code
+    result = list(map(encode_golomb, compressed_code, M_list))
+    # save tuple (M, result) to file
     save_to_file([M, result])
