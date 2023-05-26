@@ -11,3 +11,7 @@ def unary(q):
 def rem_trun(r, k):
     rem = bin(r)
     return rem[2:].zfill(k)
+
+
+def decompress_code(code):
+    return '0' * code + '1'

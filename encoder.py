@@ -42,4 +42,4 @@ if __name__ == '__main__':
     # encode compressed code
     result = list(map(encode_golomb, compressed_code, M_list))
     # save tuple (M, result) to file
-    save_to_file([M, result])
+    save_to_file([img.shape, M, result])
