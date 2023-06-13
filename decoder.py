@@ -26,7 +26,10 @@ def decode_golomb(code, m):
         r1.append(code[i])
     r2 = [str(i) for i in r1]
     r3 = "".join(r2)
-    r = int(r3, 2)
+    if r3 == '':
+        r = 0
+    else:
+        r = int(r3, 2)
     if r < c:
         return q * m + r
     else:
@@ -40,7 +43,7 @@ def decode_golomb(code, m):
 
 
 def loadData() -> list:
-    with open('./encoded_data.data', 'rb') as filehandle:
+    with open('./encoded_data', 'rb') as filehandle:
         return pickle.load(filehandle)
 
 
@@ -71,6 +74,5 @@ if __name__ == '__main__':
     cv2.imwrite('decoded_barbara.pgm', img)
     cv2.imshow('Decoded image', img)
     cv2.waitKey(0)
-
 
 
