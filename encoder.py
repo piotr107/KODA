@@ -5,7 +5,7 @@ import numpy as np
 
 from utils import *
 
-M = 4
+M = 3
 
 
 def encode_golomb(n, m):
@@ -35,8 +35,14 @@ if __name__ == '__main__':
     h = img.shape[0]
     w = img.shape[1]
 
-    result = np.zeros((h, w), np.dtype('U100'))
+    result = ''
     for y in range(0, h):
         for x in range(0, w):
-            result[y][x] = encode_golomb(img[y, x], M)
-    save_to_file([M, result])
+            result += encode_golomb(img[y, x], M)
+    save_to_file([img.shape, M, result])
+
+    # original image size in bits
+    org_size = h*w*8
+    encoded_size = len(result)
+    coding_ratio = encoded_size / org_size
+    print(coding_ratio)
