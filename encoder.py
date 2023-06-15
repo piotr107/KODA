@@ -1,7 +1,6 @@
 import cv2
 import math
 import pickle
-import numpy as np
 
 from utils import *
 
@@ -30,7 +29,7 @@ def save_to_file(data):
         pickle.dump(data, filehandle)
 
 
-if __name__ == '__main__':
+def run_encode(filename, m):
     img = cv2.imread('./barbara.pgm', 0)
     h = img.shape[0]
     w = img.shape[1]
@@ -42,7 +41,12 @@ if __name__ == '__main__':
     save_to_file([img.shape, M, result])
 
     # original image size in bits
-    org_size = h*w*8
+    org_size = h * w * 8
     encoded_size = len(result)
     coding_ratio = encoded_size / org_size
-    print(coding_ratio)
+    return org_size, encoded_size, coding_ratio
+
+
+if __name__ == '__main__':
+    result = run_encode('barbara.pgm', M)
+    print(result)
