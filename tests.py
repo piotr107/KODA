@@ -4,6 +4,7 @@ import cv2
 import matplotlib.pyplot as plt
 from encoder import *
 from decoder import *
+import math
 
 
 def generate_histogram_entropy(filename):
@@ -31,10 +32,28 @@ def generate_histogram_entropy(filename):
 
     return img_ent
 
+def calc_p_m(filename):
+    img = cv2.imread(filename, 0)
+    h = img.shape[0]
+    w = img.shape[1]
+
+    num_0 = 0
+    num_1 = 0
+    for y in range(0, h):
+        for x in range(0, w):
+            num_0 += unary(img[y, x]).count('0')
+            num_1 += unary(img[y, x]).count('1')
+    bit_len = num_0 + num_1
+    p = num_0 / bit_len
+    m = -math.log(p, 2)
+    m = math.ceil(m)
+    return p, m
 
 if __name__ == '__main__':
 
-    M = 10
+    # p, m = calc_p_m('geometr_05.pgm')
+    # print((p, m))
+    m = 7
 
     # wyznaczyc histogram i entropie danych wejsciowych
     entropies = {}
@@ -46,31 +65,31 @@ if __name__ == '__main__':
         if os.path.isfile(f):
             ent = generate_histogram_entropy(filename)
             entropies[filename[:len(filename) - 4]] = ent
-            org_size, encoded_size, avg, ratio = run_encode(filename, M)
+            org_size, avg, encoded_size, ratio = run_encode(filename, m)
             results.append((org_size, encoded_size, ratio))
             code_averages[filename[:len(filename) - 4]] = avg
 
-    for filename in filenames:
-        print(filename + ': ' + str(entropies[filename[:len(filename) - 4]]))
+    # for filename in filenames:
+        #print(filename + ': ' + str(entropies[filename[:len(filename) - 4]]))
 
     # cut off values to keep chart in scale
-    print(M)
-    print(code_averages['solid_black'])
-    print(code_averages['solid_dots'])
-    if code_averages['solid_black'] > 10:
-        code_averages['solid_black'] = 10
-    if code_averages['solid_dots'] > 10:
-        code_averages['solid_dots'] = 10
+    # print(M)
+    # print(code_averages['solid_black'])
+    # print(code_averages['solid_dots'])
+    # if code_averages['solid_black'] > 10:
+    #     code_averages['solid_black'] = 10
+    # if code_averages['solid_dots'] > 10:
+    #     code_averages['solid_dots'] = 10
 
     # porownac entropie ze srednia dlugoscia bitowa kodu wyjsciowego
     plt.bar([(2.5 * i) + 0.4 for i in range(len(entropies))], list(code_averages.values()), align='center',
             label='Average')
-    plt.bar([(2.5 * i) - 0.4 for i in range(len(entropies))], list(entropies.values()), align='center', label='Entropy')
+    plt.bar([(2.5 * i) for i in range(len(entropies))], list(entropies.values()), align='center', label='Entropy')
     plt.xticks([2.5 * i for i in range(len(entropies))], list(entropies.keys()), rotation=70)
     plt.legend()
-    plt.title('Porównanie entropii i długości dla M=' + str(M))
+    plt.title('Entropie dla M=' + str(m))
     plt.tight_layout()
-    plt.savefig('./output/entropies_' + str(M) + '.png')
+    plt.savefig('./output/entropies_' + str(m) + '.png')
 
     # przetestowac algorytm na obrazach
     with open('./output/results_' + str(M) + '.txt', 'w') as f:

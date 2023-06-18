@@ -30,23 +30,24 @@ def save_to_file(data):
 
 
 def run_encode(filename, m):
-    img = cv2.imread('./barbara.pgm', 0)
+    img = cv2.imread(filename, 0)
     h = img.shape[0]
     w = img.shape[1]
 
     result = ''
     for y in range(0, h):
         for x in range(0, w):
-            result += encode_golomb(img[y, x], M)
-    save_to_file([img.shape, M, result])
+            result += encode_golomb(img[y, x], m)
+    save_to_file([img.shape, m, result])
 
     # original image size in bits
     org_size = h * w * 8
     encoded_size = len(result)
     coding_ratio = encoded_size / org_size
-    return org_size, encoded_size, coding_ratio
+    avg = encoded_size / (h * w)
+    return org_size, avg, encoded_size, coding_ratio
 
 
 if __name__ == '__main__':
-    result = run_encode('barbara.pgm', M)
+    result = run_encode('solid_white.pgm', M)
     print(result)
